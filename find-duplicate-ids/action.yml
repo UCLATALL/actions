@@ -1,0 +1,25 @@
+name: 'Find duplicate IDs'
+description: 'Search for duplicate HTML IDs in markdown files'
+author: 'Adam Blake'
+inputs:
+  include:
+    description: |
+      A JSON array as a string, where each element is a glob to use to find
+      markdown files to search.
+    required: false
+    default: '["."]'
+  follow-symbolic-links:
+    description: 'Indicates whether to follow symbolic links'
+    default: true
+outputs:
+  duplicates:
+    description: |
+      A JSON object as a string, where the keys are the duplicate IDs and the
+      values are the locations in the files they were found in. If none are 
+      found, an empty object is returned: '{}'
+runs:
+  using: 'node16'
+  main: 'dist/main.js'
+branding:
+  icon: 'search'
+  color: 'red'

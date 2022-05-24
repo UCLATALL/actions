@@ -1,0 +1,32 @@
+name: Find Duplicate IDs
+
+on: [push, pull_request]
+
+jobs:
+  find-duplicate-ids:
+    runs-on: ubuntu-latest
+
+    steps:
+    
+    # action repo: https://github.com/actions/checkout
+    - uses: actions/checkout@v3
+    
+    - name: "Run on files with repeated IDs"
+      id: repeated
+      uses: ./
+      with:
+        include: ./test/fixtures/repeated-across-pages/*
+    
+    - name: "Run on file with no repeated IDs"
+      id: valid
+      uses: ./
+      with:
+        include: ./test/fixtures/valid/*
+
+    - name: "Show output of `repeated` run"
+      run: |
+        echo ${{ steps.repeated.outputs.duplicates }}
+
+    - name: "Show output of `valid` run"
+      run: |
+        echo ${{ steps.repeated.outputs.duplicates }}
