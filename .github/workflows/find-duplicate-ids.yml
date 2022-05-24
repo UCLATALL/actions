@@ -13,15 +13,15 @@ jobs:
     
     - name: "Run on files with repeated IDs"
       id: repeated
-      uses: ./
+      uses: UCLATALL/actions/find-duplicate-ids@v1
       with:
-        include: ./test/fixtures/repeated-across-pages/*
+        include: ./find-duplicate-ids/test/fixtures/repeated-across-pages/*
     
     - name: "Run on file with no repeated IDs"
       id: valid
-      uses: ./
+      uses: UCLATALL/actions/find-duplicate-ids@v1
       with:
-        include: ./test/fixtures/valid/*
+        include: ./find-duplicate-ids/test/fixtures/valid/*
 
     - name: "Show output of `repeated` run"
       run: |

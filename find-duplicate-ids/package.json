@@ -1,6 +1,6 @@
 {
   "name": "find-duplicate-ids",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "private": true,
   "description": "GitHub Action to search for duplicate HTML IDs in markdown files",
   "main": "dist/main.js",
