@@ -52,7 +52,7 @@ steps:
         ./b
 ```
 
-### Using the Output
+### Using the output
 
 In this example, the duplicates are piped into another script using [`actions/github-script`](https://github.com/actions/github-script):
 

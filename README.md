@@ -1,6 +1,6 @@
-# UCLATALL Actions
+# UCLATALL GitHub Actions
 
-## About These Actions
+## About these actions
 
 This repository houses the GitHub actions used by UCLATALL. These actions are used to facilitate editing and maintaining the books in the *Better Book* project. Read more at <https://coursekata.org>
 
@@ -8,15 +8,18 @@ This repository houses the GitHub actions used by UCLATALL. These actions are us
 
 ## Developers / Maintenance
 
-### Adding an Action
+### Adding an action
 
 All of the actions are subdirectories of this project (e.g. `find-duplicate-ids`). Additionally, they all have GitHub Actions workflows to test them in this repository. When creating a new action, make sure to do all of the following:
 
 1. Create a subdirectory in this repo
+
 2. Create the action
-   1. Make sure to write tests for any code
-   2. Make sure to document descriptions, inputs, functions, etc.
-   3. If it is a Javascript or Typescript action, make sure it uses [`@vercell/ncc`](https://www.npmjs.com/package/@vercel/ncc) in a script called `package` in `package.json`
+   1. Make sure to fully document the action in the README, and link it with a short description in the [**About these actions**](#about-these-actions) area above
+   2. Copy the LICENSE in from the main directory
+   3. Make sure to write tests for any code
+   4. Make sure to document descriptions, inputs, functions, etc.
+   5. If it is a Javascript or Typescript action, make sure it uses [`@vercell/ncc`](https://www.npmjs.com/package/@vercel/ncc) in a script called `package` in `package.json`
 
 3. Add `steps` to the `check-dist` and `build-test` actions (and note that these jobs run using Node 16)
    1. Add a step (you can copy and paste a previous step) to `.github/workflows/check-dist.yml`. This will make sure that the action has been packaged for its most recent commit
