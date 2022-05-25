@@ -2,6 +2,11 @@ import * as child_process from 'child_process'
 import * as path from 'path'
 import {expect, it} from '@jest/globals'
 
+function relativize_paths(output: string): string {
+  const matcher = new RegExp(process.cwd(), 'g')
+  return output.replace(matcher, '.')
+}
+
 it('will work on GitHub Actions (valid)', () => {
   // setup actions env like it will be on GitHub
   process.env['INPUT_INCLUDE'] = './test/fixtures/valid/*'
@@ -17,16 +22,16 @@ it('will work on GitHub Actions (valid)', () => {
 
   // execute with appropriate env
   const output = child_process.execFileSync(node, [run_path], options).toString()
-  expect(output).toMatchInlineSnapshot(`
+  expect(relativize_paths(output)).toMatchInlineSnapshot(`
     "::debug::followSymbolicLinks 'true'
     ::debug::matchDirectories 'false'
     Searching for files in these search paths:
-      - /Users/Adam/GitHub/actions/find-duplicate-ids/test/fixtures/valid
+      - ./test/fixtures/valid
     ::debug::followSymbolicLinks 'true'
     ::debug::implicitDescendants 'true'
     ::debug::matchDirectories 'false'
     ::debug::omitBrokenSymbolicLinks 'true'
-    ::debug::Search path '/Users/Adam/GitHub/actions/find-duplicate-ids/test/fixtures/valid'
+    ::debug::Search path './test/fixtures/valid'
 
     ::set-output name=duplicates::{}
     "
@@ -48,19 +53,19 @@ it('will work on GitHub Actions (invalid)', () => {
 
   // execute with appropriate env
   const output = child_process.execFileSync(node, [run_path], options).toString()
-  expect(output).toMatchInlineSnapshot(`
+  expect(relativize_paths(output)).toMatchInlineSnapshot(`
     "::debug::followSymbolicLinks 'true'
     ::debug::matchDirectories 'false'
     Searching for files in these search paths:
-      - /Users/Adam/GitHub/actions/find-duplicate-ids/test/fixtures/repeated-across-pages
+      - ./test/fixtures/repeated-across-pages
     ::debug::followSymbolicLinks 'true'
     ::debug::implicitDescendants 'true'
     ::debug::matchDirectories 'false'
     ::debug::omitBrokenSymbolicLinks 'true'
-    ::debug::Search path '/Users/Adam/GitHub/actions/find-duplicate-ids/test/fixtures/repeated-across-pages'
+    ::debug::Search path './test/fixtures/repeated-across-pages'
 
-    ::set-output name=duplicates::{\\"Pulse2\\":[{\\"name\\":\\"Pulse2\\",\\"file\\":\\"/Users/Adam/GitHub/actions/find-duplicate-ids/test/fixtures/repeated-across-pages/page-1-copy.md\\"},{\\"name\\":\\"Pulse2\\",\\"file\\":\\"/Users/Adam/GitHub/actions/find-duplicate-ids/test/fixtures/repeated-across-pages/page-1.md\\"}],\\"ch2-1\\":[{\\"name\\":\\"ch2-1\\",\\"file\\":\\"/Users/Adam/GitHub/actions/find-duplicate-ids/test/fixtures/repeated-across-pages/page-1-copy.md\\"},{\\"name\\":\\"ch2-1\\",\\"file\\":\\"/Users/Adam/GitHub/actions/find-duplicate-ids/test/fixtures/repeated-across-pages/page-1.md\\"}],\\"Ch2_Starting_1_r3.0\\":[{\\"name\\":\\"Ch2_Starting_1_r3.0\\",\\"file\\":\\"/Users/Adam/GitHub/actions/find-duplicate-ids/test/fixtures/repeated-across-pages/page-1-copy.md\\"},{\\"name\\":\\"Ch2_Starting_1_r3.0\\",\\"file\\":\\"/Users/Adam/GitHub/actions/find-duplicate-ids/test/fixtures/repeated-across-pages/page-1.md\\"}],\\"ch2-2\\":[{\\"name\\":\\"ch2-2\\",\\"file\\":\\"/Users/Adam/GitHub/actions/find-duplicate-ids/test/fixtures/repeated-across-pages/page-1-copy.md\\"},{\\"name\\":\\"ch2-2\\",\\"file\\":\\"/Users/Adam/GitHub/actions/find-duplicate-ids/test/fixtures/repeated-across-pages/page-1.md\\"}]}
-    ::warning::Duplicate IDs found. Here are the IDs and their locations:%0A  - Pulse2%0A      /Users/Adam/GitHub/actions/find-duplicate-ids/test/fixtures/repeated-across-pages/page-1-copy.md%0A      /Users/Adam/GitHub/actions/find-duplicate-ids/test/fixtures/repeated-across-pages/page-1.md%0A  - ch2-1%0A      /Users/Adam/GitHub/actions/find-duplicate-ids/test/fixtures/repeated-across-pages/page-1-copy.md%0A      /Users/Adam/GitHub/actions/find-duplicate-ids/test/fixtures/repeated-across-pages/page-1.md%0A  - Ch2_Starting_1_r3.0%0A      /Users/Adam/GitHub/actions/find-duplicate-ids/test/fixtures/repeated-across-pages/page-1-copy.md%0A      /Users/Adam/GitHub/actions/find-duplicate-ids/test/fixtures/repeated-across-pages/page-1.md%0A  - ch2-2%0A      /Users/Adam/GitHub/actions/find-duplicate-ids/test/fixtures/repeated-across-pages/page-1-copy.md%0A      /Users/Adam/GitHub/actions/find-duplicate-ids/test/fixtures/repeated-across-pages/page-1.md
+    ::set-output name=duplicates::{\\"Pulse2\\":[{\\"name\\":\\"Pulse2\\",\\"file\\":\\"./test/fixtures/repeated-across-pages/page-1-copy.md\\"},{\\"name\\":\\"Pulse2\\",\\"file\\":\\"./test/fixtures/repeated-across-pages/page-1.md\\"}],\\"ch2-1\\":[{\\"name\\":\\"ch2-1\\",\\"file\\":\\"./test/fixtures/repeated-across-pages/page-1-copy.md\\"},{\\"name\\":\\"ch2-1\\",\\"file\\":\\"./test/fixtures/repeated-across-pages/page-1.md\\"}],\\"Ch2_Starting_1_r3.0\\":[{\\"name\\":\\"Ch2_Starting_1_r3.0\\",\\"file\\":\\"./test/fixtures/repeated-across-pages/page-1-copy.md\\"},{\\"name\\":\\"Ch2_Starting_1_r3.0\\",\\"file\\":\\"./test/fixtures/repeated-across-pages/page-1.md\\"}],\\"ch2-2\\":[{\\"name\\":\\"ch2-2\\",\\"file\\":\\"./test/fixtures/repeated-across-pages/page-1-copy.md\\"},{\\"name\\":\\"ch2-2\\",\\"file\\":\\"./test/fixtures/repeated-across-pages/page-1.md\\"}]}
+    ::warning::Duplicate IDs found. Here are the IDs and their locations:%0A  - Pulse2%0A      ./test/fixtures/repeated-across-pages/page-1-copy.md%0A      ./test/fixtures/repeated-across-pages/page-1.md%0A  - ch2-1%0A      ./test/fixtures/repeated-across-pages/page-1-copy.md%0A      ./test/fixtures/repeated-across-pages/page-1.md%0A  - Ch2_Starting_1_r3.0%0A      ./test/fixtures/repeated-across-pages/page-1-copy.md%0A      ./test/fixtures/repeated-across-pages/page-1.md%0A  - ch2-2%0A      ./test/fixtures/repeated-across-pages/page-1-copy.md%0A      ./test/fixtures/repeated-across-pages/page-1.md
     "
   `)
 })

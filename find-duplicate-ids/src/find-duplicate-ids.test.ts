@@ -1,8 +1,5 @@
-import * as path from 'path'
 import {expect, it} from '@jest/globals'
 import {find_duplicate_ids} from './find-duplicate-ids'
-
-const fixtures_dir = path.join(__dirname, '..', 'test/fixtures')
 
 it('finds no duplicates when a file has no duplicates', async () => {
   const duplicates = await find_duplicate_ids(['./test/fixtures/valid/*'])
@@ -11,8 +8,8 @@ it('finds no duplicates when a file has no duplicates', async () => {
 
 it('finds duplicated IDs within a page', async () => {
   const expected_ids = (name: string) => [
-    {name: name, file: path.join(fixtures_dir, 'repeated-in-page/page-1-doubled.md')},
-    {name: name, file: path.join(fixtures_dir, 'repeated-in-page/page-1-doubled.md')},
+    {name: name, file: './test/fixtures/repeated-in-page/page-1-doubled.md'},
+    {name: name, file: './test/fixtures/repeated-in-page/page-1-doubled.md'},
   ]
 
   const duplicates = await find_duplicate_ids(['./test/fixtures/repeated-in-page/*'])
@@ -26,8 +23,8 @@ it('finds duplicated IDs within a page', async () => {
 
 it('finds duplicated IDs across pages', async () => {
   const expected_ids = (name: string) => [
-    {name: name, file: path.join(fixtures_dir, 'repeated-across-pages/page-1-copy.md')},
-    {name: name, file: path.join(fixtures_dir, 'repeated-across-pages/page-1.md')},
+    {name: name, file: './test/fixtures/repeated-across-pages/page-1-copy.md'},
+    {name: name, file: './test/fixtures/repeated-across-pages/page-1.md'},
   ]
 
   const duplicates = await find_duplicate_ids(['./test/fixtures/repeated-across-pages/*'])
