@@ -10,11 +10,12 @@ inputs:
     default: .
   action:
     description: |
-      If duplicates are found, what should we do? Either "warn" or "error"
+      If duplicates are found, what should we do? Either `warn` or `error`
     required: false
     default: warn
   follow-symbolic-links:
-    description: 'Indicates whether to follow symbolic links'
+    description: |
+      Indicates whether to follow symbolic links when searching the globs
     required: false
     default: true
 outputs:
