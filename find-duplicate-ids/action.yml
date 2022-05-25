@@ -4,12 +4,18 @@ author: 'Adam Blake'
 inputs:
   include:
     description: |
-      A JSON array as a string, where each element is a glob to use to find
-      markdown files to search.
+      A multiline input of the globs to use to build search paths. Use a 
+      newline to separate each glob.
     required: false
-    default: '["."]'
+    default: .
+  action:
+    description: |
+      If duplicates are found, what should we do? Either "warn" or "error"
+    required: false
+    default: warn
   follow-symbolic-links:
     description: 'Indicates whether to follow symbolic links'
+    required: false
     default: true
 outputs:
   duplicates:

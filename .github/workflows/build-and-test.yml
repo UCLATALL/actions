@@ -1,0 +1,60 @@
+name: 'Build and test the actions'
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - 'releases/*'
+    paths-ignore:
+      - '**.md'
+  workflow_dispatch:
+
+jobs:
+  build: # make sure build/ci work properly
+    runs-on: ubuntu-latest
+    steps:
+      # https://github.com/actions/checkout
+      - uses: actions/checkout@v3
+
+      # https://github.com/actions/setup-node
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: "Build find-duplicate-ids"
+        uses: ./.github/workflows/workflow-actions/build
+        with:
+          action_dir: find-duplicate-ids
+
+  test: # make sure the action works on a clean machine without building
+    runs-on: ubuntu-latest
+    steps:
+      # https://github.com/actions/checkout
+      - uses: actions/checkout@v3
+
+      - name: "[find-duplicate-ids] Find duplicates in a set of globs"
+        uses: UCLATALL/actions/find-duplicate-ids@v1
+        id: find-duplicate-ids--duplicates
+        continue-on-error: true
+        with:
+          include: ./find-duplicate-ids/test/**
+          action: error
+
+      # https://github.com/actions/github-script
+      - name: "[find-duplicate-ids] Test that duplicates were found"
+        uses: actions/github-script@v6
+        env: 
+          DUPLICATES: ${{ steps.find-duplicate-ids--duplicates.outputs.duplicates }}
+        with:
+          script: |
+            const assert_equal = (value) => require("node:assert/strict").deepEqual(value, true)
+            assert_equal(Object.keys(JSON.parse(process.env['DUPLICATES'])).length !== 0)
+
+      - name: "[find-duplicate-ids] Scan only files with no duplicates"
+        uses: UCLATALL/actions/find-duplicate-ids@v1
+        id: find-duplicate-ids--valid
+        with:
+          include: ./find-duplicate-ids/test/fixtures/valid/*
+          action: error

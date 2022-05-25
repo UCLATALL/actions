@@ -1,15 +1,24 @@
+import * as path from 'path'
+import * as core from '@actions/core'
 import * as glob from '@actions/glob'
 import {document_from_md} from './document-from-md'
+import {bullet_list} from './formatting'
 
-type IDMap = Record<string, ID[]>
+export type IDMap = Record<string, ID[]>
 type ID = {name: string; file: string}
 
 export async function find_duplicate_ids(
   include: string[],
   follow_symbolic_links = true
 ) {
-  const glob_options = {followSymbolicLinks: follow_symbolic_links}
-  const globber = await glob.create(include.join('\n'), glob_options)
+  const globber = await glob.create(include.join('\n'), {
+    followSymbolicLinks: follow_symbolic_links,
+    matchDirectories: false,
+  })
+
+  core.info(
+    bullet_list('Searching for files in these search paths:', globber.getSearchPaths())
+  )
 
   const ids: IDMap = {}
   const duplicates: IDMap = {}

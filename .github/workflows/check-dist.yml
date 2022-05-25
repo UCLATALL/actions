@@ -1,0 +1,31 @@
+name: "Check dist/ entry points"
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+  workflow_dispatch:
+
+jobs:
+  check-dist:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # https://github.com/actions/checkout
+      - uses: actions/checkout@v3
+      
+      # https://github.com/actions/setup-node
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: "find-duplicate-ids"
+        uses: ./.github/workflows/workflow-actions/check-dist
+        with:
+          action_dir: find-duplicate-ids
