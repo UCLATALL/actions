@@ -24,6 +24,10 @@ export async function find_duplicate_ids(
   const duplicates: IDMap = {}
 
   for await (const file of globber.globGenerator()) {
+    if (!['.html', '.md'].includes(path.parse(file).ext.toLowerCase())) {
+      continue
+    }
+
     const document = await document_from_md(file)
     document.querySelectorAll('*[id]').forEach(element => {
       const id: ID = {name: element.id, file: file.replace(process.cwd(), '.')}

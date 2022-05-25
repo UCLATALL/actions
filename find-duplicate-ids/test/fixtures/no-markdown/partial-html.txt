@@ -1,0 +1,7 @@
+<iframe data-type="learnosity" id="Pulse2"  src="https://coursekata.org/learnosity/preview/Pulse2" width="100%" height="660"></iframe>
+
+<h1 id="chapter-2-understanding-data">Chapter 2 - Understanding Data</h1>
+<h2 id="2-0-starting-with-a-bunch-of-numbers">2.0 Starting With a Bunch of Numbers</h2>
+<p>When statisticians talk about variation, they refer to a particular kind of variation: variation in data. But variation doesn’t start out as data. Look around; you see people, buildings, trees, light, and so on. And you see lots of variation: no two people look exactly alike, just as no two trees look exactly alike. Statisticians seek to express this variation using numbers, which is where we will start. (In a bit we will discuss where the numbers come from.)</p>
+
+<iframe data-type="learnosity" id="Pulse2"  src="https://coursekata.org/learnosity/preview/Pulse2" width="100%" height="660"></iframe>

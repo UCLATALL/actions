@@ -6,6 +6,25 @@ it('finds no duplicates when a file has no duplicates', async () => {
   expect(duplicates).toEqual({})
 })
 
+it('ignores non-markdown files', async () => {
+  const duplicates = await find_duplicate_ids(['./test/fixtures/no-markdown'])
+  expect(duplicates).toEqual({})
+})
+
+it('tolerates HTML and partial HTML though', async () => {
+  const duplicates = await find_duplicate_ids(['./test/fixtures/contains-html'])
+  expect(duplicates).toEqual({
+    Pulse2: [
+      {file: './test/fixtures/contains-html/full-html.html', name: 'Pulse2'},
+      {file: './test/fixtures/contains-html/full-html.html', name: 'Pulse2'},
+      {file: './test/fixtures/contains-html/indented-html.html', name: 'Pulse2'},
+      {file: './test/fixtures/contains-html/indented-html.html', name: 'Pulse2'},
+      {file: './test/fixtures/contains-html/partial-html.html', name: 'Pulse2'},
+      {file: './test/fixtures/contains-html/partial-html.html', name: 'Pulse2'},
+    ],
+  })
+})
+
 it('finds duplicated IDs within a page', async () => {
   const expected_ids = (name: string) => [
     {name: name, file: './test/fixtures/repeated-in-page/page-1-doubled.md'},
