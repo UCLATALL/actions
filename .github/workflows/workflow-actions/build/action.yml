@@ -3,6 +3,7 @@ description: Ensure that a package builds and packages without errors.
 inputs:
   action_dir:
     description: The directory the action resides in in this repository
+    required: true
 runs:
   using: "composite"
   steps:

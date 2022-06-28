@@ -11,6 +11,11 @@ it('ignores non-markdown files', async () => {
   expect(duplicates).toEqual({})
 })
 
+it('ignores videos', async () => {
+  const duplicates = await find_duplicate_ids(['./test/fixtures/duplicate-videos'])
+  expect(duplicates).toEqual({})
+})
+
 it('tolerates HTML and partial HTML though', async () => {
   const duplicates = await find_duplicate_ids(['./test/fixtures/contains-html'])
   expect(duplicates).toEqual({

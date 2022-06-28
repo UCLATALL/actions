@@ -17,7 +17,7 @@ inputs:
     description: |
       Indicates whether to follow symbolic links when searching the globs
     required: false
-    default: true
+    default: 'true'
 outputs:
   duplicates:
     description: |

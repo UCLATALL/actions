@@ -30,6 +30,10 @@ export async function find_duplicate_ids(
 
     const document = await document_from_md(file)
     document.querySelectorAll('*[id]').forEach(element => {
+      if ((element as HTMLElement).dataset.type == 'vimeo') {
+        return
+      }
+
       const id: ID = {name: element.id, file: file.replace(process.cwd(), '.')}
 
       if (id.name in ids) {
