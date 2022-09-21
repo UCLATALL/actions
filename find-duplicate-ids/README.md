@@ -28,6 +28,7 @@ steps:
   # https://github.com/actions/checkout
   - uses: actions/checkout@v3
 
+  # https://github.com/UCLATALL/actions/find-duplicate-ids
   - name: "Find duplicate IDs in the repository's markdown files"
     uses: UCLATALL/actions/find-duplicate-ids@v1
     with:
@@ -43,6 +44,7 @@ steps:
   # https://github.com/actions/checkout
   - uses: actions/checkout@v3
 
+  # https://github.com/UCLATALL/actions/find-duplicate-ids
   - name: "Find duplicate IDs in a set of globs"
     uses: UCLATALL/actions/find-duplicate-ids@v1
     with:
@@ -61,6 +63,7 @@ steps:
   # https://github.com/actions/checkout
   - uses: actions/checkout@v3
 
+  # https://github.com/UCLATALL/actions/find-duplicate-ids
   - name: "Find duplicate IDs in the repository's markdown files"
     id: find-duplicate-ids
     uses: UCLATALL/actions/find-duplicate-ids@v1
@@ -75,6 +78,7 @@ steps:
       DUPLICATES: ${{ steps.find-duplicate-ids.outputs.duplicates }}
     with:
       script: |
+        // assert that there are no errors
         const assert_equal = (value) => require("node:assert/strict").deepEqual(value, true)
         assert_equal(Object.keys(JSON.parse(process.env['DUPLICATES'])).length !== 0)
 ```
