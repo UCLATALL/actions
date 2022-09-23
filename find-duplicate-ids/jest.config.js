@@ -7,4 +7,5 @@ module.exports = {
   },
   verbose: true,
   collectCoverage: true,
+  setupFiles: ['./jest.setup.js'],
 }
