@@ -1,8 +1,6 @@
 import * as path from 'path'
-import * as core from '@actions/core'
 import * as glob from '@actions/glob'
 import {document_from_md} from './document-from-md'
-import {bullet_list} from './formatting'
 
 export type IDMap = Record<string, ID[]>
 type ID = {name: string; file: string}
