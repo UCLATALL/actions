@@ -5,20 +5,20 @@ on:
     branches:
       - main
     paths-ignore:
-      - '**.md'
+      - "**.md"
   pull_request:
     paths-ignore:
-      - '**.md'
+      - "**.md"
   workflow_dispatch:
 
 jobs:
   check-dist:
     runs-on: ubuntu-latest
-    
+
     steps:
       # https://github.com/actions/checkout
       - uses: actions/checkout@v3
-      
+
       # https://github.com/actions/setup-node
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -29,3 +29,8 @@ jobs:
         uses: ./.github/workflows/workflow-actions/check-dist
         with:
           action_dir: find-duplicate-ids
+
+      - name: "validate-book-yaml"
+        uses: ./.github/workflows/workflow-actions/check-dist
+        with:
+          action_dir: validate-book-yaml

@@ -1,0 +1,52 @@
+{
+  "name": "validate-book-yaml",
+  "version": "1.2.0",
+  "private": true,
+  "description": "GitHub Action to validate CourseKata book configuration files.",
+  "main": "dist/main.js",
+  "scripts": {
+    "lint": "eslint",
+    "fix": "npm run lint -- --fix",
+    "format": "prettier --write '**/*.ts'",
+    "clean": "rimraf lib dist",
+    "compile": "tsc",
+    "package": "ncc build ./lib/main.js -o dist --source-map --license licenses.txt",
+    "pretest": "npm run lint",
+    "test": "jest",
+    "all": "npm run clean && npm run compile && npm run format && npm run lint && npm run package && npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UCLATALL/actions.git",
+    "directory": "validate-book-yaml"
+  },
+  "keywords": [
+    "coursekata",
+    "actions",
+    "validate",
+    "yaml"
+  ],
+  "author": "Adam Blake",
+  "license": "AGPL-3.0-or-later",
+  "dependencies": {
+    "@actions/core": "^1.9.1",
+    "@actions/glob": "^0.3.0",
+    "ajv": "^8.11.0",
+    "yaml": "^2.1.1"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.0.0",
+    "@types/jest": "^29.0.3",
+    "@types/node": "^18.7.18",
+    "@typescript-eslint/parser": "^5.38.0",
+    "@vercel/ncc": "^0.34.0",
+    "eslint": "^8.23.0",
+    "eslint-plugin-github": "^4.3.7",
+    "eslint-plugin-jest": "^27.0.4",
+    "jest": "^29.0.3",
+    "prettier": "^2.7.1",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^29.0.1",
+    "typescript": "^4.8.3"
+  }
+}

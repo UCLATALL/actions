@@ -1,13 +1,13 @@
-name: 'Build and test the actions'
+name: "Build and test the actions"
 
 on:
   pull_request:
   push:
     branches:
       - main
-      - 'releases/*'
+      - "releases/*"
     paths-ignore:
-      - '**.md'
+      - "**.md"
   workflow_dispatch:
 
 jobs:
@@ -28,11 +28,26 @@ jobs:
         with:
           action_dir: find-duplicate-ids
 
+      - name: "validate-book-yaml"
+        uses: ./.github/workflows/workflow-actions/build
+        with:
+          action_dir: validate-book-yaml
+
   test: # make sure the action works on a clean machine without building
     runs-on: ubuntu-latest
     steps:
       # https://github.com/actions/checkout
       - uses: actions/checkout@v3
+
+      #####
+      # find-duplicate-ids
+      #####
+      - name: "[find-duplicate-ids] Scan only files with no duplicates"
+        uses: UCLATALL/actions/find-duplicate-ids@v1
+        id: find-duplicate-ids--valid
+        with:
+          include: ./find-duplicate-ids/test/fixtures/valid/*
+          action: error
 
       - name: "[find-duplicate-ids] Find duplicates in a set of globs"
         uses: UCLATALL/actions/find-duplicate-ids@v1
@@ -45,16 +60,35 @@ jobs:
       # https://github.com/actions/github-script
       - name: "[find-duplicate-ids] Test that duplicates were found"
         uses: actions/github-script@v6
-        env: 
+        env:
           DUPLICATES: ${{ steps.find-duplicate-ids--duplicates.outputs.duplicates }}
         with:
           script: |
             const assert_equal = (value) => require("node:assert/strict").deepEqual(value, true)
             assert_equal(Object.keys(JSON.parse(process.env['DUPLICATES'])).length !== 0)
 
-      - name: "[find-duplicate-ids] Scan only files with no duplicates"
-        uses: UCLATALL/actions/find-duplicate-ids@v1
-        id: find-duplicate-ids--valid
+      #####
+      # validate-book-yaml
+      #####
+      - name: "[validate-book-yaml] Validate on valid configs"
+        uses: UCLATALL/actions/validate-book-yaml@v1
+        id: validate-book-yaml--valid
         with:
-          include: ./find-duplicate-ids/test/fixtures/valid/*
-          action: error
+          include: ./validate-book-yaml/test/fixtures/valid/*
+
+      - name: "[validate-book-yaml] Find error in config"
+        uses: UCLATALL/actions/validate-book-yaml@v1
+        id: validate-book-yaml--errors
+        continue-on-error: true
+        with:
+          include: ./validate-book-yaml/test/fixtures/missing-name/*
+
+      # https://github.com/actions/github-script
+      - name: "[validate-book-yaml] Test that errors were found"
+        uses: actions/github-script@v6
+        env:
+          DUPLICATES: ${{ steps.validate-book-yaml.outputs.errors }}
+        with:
+          script: |
+            const assert_equal = (value) => require("node:assert/strict").deepEqual(value, true)
+            assert_equal(Object.keys(JSON.parse(process.env['ERRORS'])).length !== 0)
