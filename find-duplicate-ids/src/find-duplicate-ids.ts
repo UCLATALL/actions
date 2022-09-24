@@ -16,10 +16,6 @@ export async function find_duplicate_ids(
     matchDirectories: false,
   })
 
-  core.info(
-    bullet_list('Searching for files in these search paths:', globber.getSearchPaths())
-  )
-
   const ids: IDMap = {}
   const duplicates: IDMap = {}
 

@@ -25,8 +25,6 @@ it('will work on GitHub Actions (valid)', () => {
   expect(relativize_paths(output)).toMatchInlineSnapshot(`
     "::debug::followSymbolicLinks 'true'
     ::debug::matchDirectories 'false'
-    Searching for files in these search paths:
-      - ./test/fixtures/valid
     ::debug::followSymbolicLinks 'true'
     ::debug::implicitDescendants 'true'
     ::debug::matchDirectories 'false'
@@ -56,8 +54,6 @@ it('will work on GitHub Actions (invalid)', () => {
   expect(relativize_paths(output)).toMatchInlineSnapshot(`
     "::debug::followSymbolicLinks 'true'
     ::debug::matchDirectories 'false'
-    Searching for files in these search paths:
-      - ./test/fixtures/repeated-across-pages
     ::debug::followSymbolicLinks 'true'
     ::debug::implicitDescendants 'true'
     ::debug::matchDirectories 'false'
