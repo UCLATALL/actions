@@ -1,0 +1,3 @@
+{
+  "conventionalCommits.scopes": ["validate-book-yaml", "find-duplicate-ids"]
+}
