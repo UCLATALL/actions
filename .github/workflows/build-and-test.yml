@@ -87,8 +87,8 @@ jobs:
       - name: "[validate-book-yaml] Test that errors were found"
         uses: actions/github-script@v6
         env:
-          DUPLICATES: ${{ steps.validate-book-yaml.outputs.errors }}
+          ERRORS: ${{ steps.validate-book-yaml--errors.outputs.errors }}
         with:
           script: |
             const assert_equal = (value) => require("node:assert/strict").deepEqual(value, true)
-            assert_equal(Object.keys(JSON.parse(process.env['ERRORS'])).length !== 0)
+            assert_equal(JSON.parse(process.env['ERRORS']).length !== 0)

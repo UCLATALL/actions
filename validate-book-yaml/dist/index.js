@@ -81,7 +81,7 @@ exports.RequiredUniqueError = RequiredUniqueError;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.cat = exports.bullet_list = void 0;
+exports.relativize_paths = exports.cat = exports.bullet_list = void 0;
 /**
  * Format a message and array of sub-points as a bullet-pointed string.
  * @param message The main message to show.
@@ -104,6 +104,15 @@ function cat(messages, spacer = ' ') {
     return messages.join(spacer);
 }
 exports.cat = cat;
+/**
+ * Find and replace all instances of the current directory with "."
+ * @param output An output string to format.
+ */
+function relativize_paths(output) {
+    const matcher = new RegExp(process.cwd(), 'g');
+    return output.replace(matcher, '.');
+}
+exports.relativize_paths = relativize_paths;
 //# sourceMappingURL=formatting.js.map
 
 /***/ }),
@@ -141,6 +150,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const validate_repo_1 = __nccwpck_require__(789);
+const formatting_1 = __nccwpck_require__(5293);
 async function run() {
     try {
         const include = core.getMultilineInput('include');
@@ -158,7 +168,7 @@ async function run() {
         const validation_errors = await (0, validate_repo_1.validate_repo)(include, follow_symbolic_links, release_name, release_date);
         core.setOutput('errors', validation_errors);
         if (validation_errors.length > 0) {
-            const message = format_error_message(validation_errors);
+            const message = (0, formatting_1.relativize_paths)(format_error_message(validation_errors));
             core.setFailed(message);
         }
     }

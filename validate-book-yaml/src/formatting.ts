@@ -24,3 +24,12 @@ export function bullet_list(
 export function cat(messages: string[], spacer = ' '): string {
   return messages.join(spacer)
 }
+
+/**
+ * Find and replace all instances of the current directory with "."
+ * @param output An output string to format.
+ */
+export function relativize_paths(output: string): string {
+  const matcher = new RegExp(process.cwd(), 'g')
+  return output.replace(matcher, '.')
+}

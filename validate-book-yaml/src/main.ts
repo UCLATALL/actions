@@ -4,6 +4,7 @@
 import * as core from '@actions/core'
 import {IConfigError} from './errors'
 import {validate_repo} from './validate-repo'
+import {relativize_paths} from './formatting'
 
 async function run() {
   try {
@@ -32,7 +33,7 @@ async function run() {
 
     core.setOutput('errors', validation_errors)
     if (validation_errors.length > 0) {
-      const message = format_error_message(validation_errors)
+      const message = relativize_paths(format_error_message(validation_errors))
       core.setFailed(message)
     }
   } catch (error) {
