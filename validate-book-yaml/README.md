@@ -2,15 +2,14 @@
 
 This action searches a given set of globs for book configuration YAML files. In each search path, any file matching `*.book.yaml` is considered. For each book configuration file found, the YAML is validated and then the contents of the YAML are validated against the book configuration specification. That specification is detailed below in [Valid Book Configuration](#valid-book-configuration)
 
-In addition to the content validation, releases are checked to ensure that they have the appropriate version and date variables specified in the top-level variables. That automatic update is detailed below in [Automatic Updates](#automatic-updates).
-
 ## Inputs
 
-| name                    | default | description                                                                                          |
-| ----------------------- | ------- | ---------------------------------------------------------------------------------------------------- |
-| `include`               | `.`     | A multiline input of the globs to use to build search paths. Use a newline to separate each glob.    |
-| `follow-symbolic-links` | `true`  | Indicates whether to follow symbolic links when searching with the globs                             |
-| `automatically-update`  | `true`  | Indicates whether to apply automatic updates as described in [Automatic Updates](#automatic-updates) |
+| name                    | default | description                                                                                       |
+| ----------------------- | ------- | ------------------------------------------------------------------------------------------------- |
+| `include`               | `.`     | A multiline input of the globs to use to build search paths. Use a newline to separate each glob. |
+| `follow-symbolic-links` | `true`  | Indicates whether to follow symbolic links when searching with the globs.                         |
+| `release-name`          | `''`    | If specified, ensure the release name in all configs is this.                                     |
+| `release-date`          | `''`    | If specified, ensure the release date in all configs is this.                                     |
 
 ## Outputs
 
@@ -95,22 +94,6 @@ As part of the course build, there are a series of content validations that are 
 - Book `name` should be present.
 - Book `name` should not be repeated in the same course version.
 - Book `sortOrder` must be present and be a valid integer.
-
-## Automatic Updates
-
-When a branch prefixed `release/` is being checked, two variables are checked and automatically updated if out-of-date: the release name and date. This update is only made the first time the branch is created on GitHub.
-
-These variables should be defined in the YAML like so:
-
-```yaml
-vars:
-  release: name-of-release
-  release_date: date-of-release
-```
-
-The name of the release should either be the exact content following `release/` in the branch name, or if the branch is named like `release/v5.0`, then `5.0`. If it does not match, it is changed to follow this rule.
-
-The date of the release should match the date that the release branch was first pushed to GitHub.
 
 ## Usage
 
