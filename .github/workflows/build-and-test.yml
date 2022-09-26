@@ -82,6 +82,7 @@ jobs:
         continue-on-error: true
         with:
           include: ./validate-book-yaml/test/fixtures/missing-name/*
+          auto-update: "true"
 
       # https://github.com/actions/github-script
       - name: "[validate-book-yaml] Test that errors were found"

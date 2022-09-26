@@ -8,8 +8,7 @@ This action searches a given set of globs for book configuration YAML files. In 
 | ----------------------- | ------- | ------------------------------------------------------------------------------------------------- |
 | `include`               | `.`     | A multiline input of the globs to use to build search paths. Use a newline to separate each glob. |
 | `follow-symbolic-links` | `true`  | Indicates whether to follow symbolic links when searching with the globs.                         |
-| `release-name`          | `''`    | If specified, ensure the release name in all configs is this.                                     |
-| `release-date`          | `''`    | If specified, ensure the release date in all configs is this.                                     |
+| `auto-update`           | `false` | If set to true, attempt to update the release name and date in the book configs.                  |
 
 ## Outputs
 
@@ -94,6 +93,10 @@ As part of the course build, there are a series of content validations that are 
 - Book `name` should be present.
 - Book `name` should not be repeated in the same course version.
 - Book `sortOrder` must be present and be a valid integer.
+
+## Automatically update version and date
+
+If `auto-update` is specified, the release version and date will be updated in each of the book configs. The release version is taken from the branch name, and it will fail to update if the branch name does not follow one of these two formats: `release/v<some version>` `release/<some-version>`. The release date will be updated to match the current date of the run.
 
 ## Usage
 

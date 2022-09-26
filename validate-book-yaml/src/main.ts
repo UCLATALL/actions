@@ -10,12 +10,9 @@ async function run() {
   try {
     const include = core.getMultilineInput('include')
     const follow_symbolic_links = core.getBooleanInput('follow-symbolic-links')
-
-    let release_name: string | undefined = core.getInput('release-name')
-    if (release_name === '') release_name = undefined
-
-    let release_date: string | Date | undefined = core.getInput('release-date')
-    release_date = release_date === '' ? undefined : new Date(release_date)
+    const auto_update = core.getBooleanInput('auto-update')
+    core.debug(`include '${include}'`)
+    core.debug(`auto-update '${auto_update}'`)
 
     if (!(Array.isArray(include) && include.every(glob => typeof glob === 'string'))) {
       const message =
@@ -27,10 +24,8 @@ async function run() {
     const validation_errors = await validate_repo(
       include,
       follow_symbolic_links,
-      release_name,
-      release_date
+      auto_update
     )
-
     core.setOutput('errors', validation_errors)
     if (validation_errors.length > 0) {
       const message = relativize_paths(format_error_message(validation_errors))

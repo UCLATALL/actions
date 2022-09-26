@@ -2,8 +2,8 @@ name: College / Statistics and Data Science ({{ book.code }})
 sortOrder: 4
 variables:
   code: ABC
-  release: some-release
-  release_date: January 1, 2022
+  release: "1.0"
+  release_date: September 26, 2022
 chapters:
   - name: Getting Started (Don't Skip This Part)
     pages:

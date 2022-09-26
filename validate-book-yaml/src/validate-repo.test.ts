@@ -1,5 +1,6 @@
 import {expect, jest, it, describe} from '@jest/globals'
 import fs from 'fs'
+import {DateTime} from 'luxon'
 import path from 'path'
 import YAML from 'yaml'
 import {BookConfig} from './schema'
@@ -63,59 +64,46 @@ it('requires that `sortOrder` be an integer', async () => {
 
 describe('auto-update', () => {
   const release = 'anything'
-  const release_date = new Date('2022-01-01T00:00:00.000-08:00')
-  const release_date_readable = 'January 1, 2022'
+  const release_date = DateTime.now()
+    .setZone('America/Los_Angeles')
+    .toLocaleString(DateTime.DATE_FULL)
+  const valid_github_ref = `refs/heads/release/${release}`
+  const invalid_github_ref = 'refs/pull/35/merge'
 
   it('does not change files when other validation errors occurred', async () => {
+    process.env['GITHUB_REF'] = valid_github_ref
     const write_spy = jest.spyOn(fs, 'writeFileSync')
     write_spy.mockImplementation((file, data) => {})
-    await validate_repo([test_glob('missing-name')], true, release, release_date)
+    await validate_repo([test_glob('missing-name')], true, true)
     expect(write_spy).not.toHaveBeenCalled()
   })
 
   it("should create the release name and date if they don't exist", async () => {
+    process.env['GITHUB_REF'] = valid_github_ref
     const write_spy = jest.spyOn(fs, 'writeFileSync')
     write_spy.mockImplementation((file, data) => {
       const config = YAML.parse(data as string) as BookConfig
       expect(config.variables?.release).toBe(release)
-      expect(config.variables?.release_date).toBe(release_date_readable)
+      expect(config.variables?.release_date).toBe(release_date)
     })
-    await validate_repo([test_glob('valid')], true, release, release_date)
+    await validate_repo([test_glob('valid')], true, true)
   })
 
   it('should overwrite the release name and date if they exist', async () => {
+    process.env['GITHUB_REF'] = valid_github_ref
     const write_spy = jest.spyOn(fs, 'writeFileSync')
     write_spy.mockImplementation((file, data) => {
       const config = YAML.parse(data as string) as BookConfig
       expect(config.variables?.release).toBe(release)
-      expect(config.variables?.release_date).toBe(release_date_readable)
+      expect(config.variables?.release_date).toBe(release_date)
     })
-    await validate_repo([test_glob('valid')], true, release, release_date)
+    await validate_repo([test_glob('valid')], true, true)
   })
 
-  // it('overwrites config when the file is valid and has been updated', async () => {
-  //   const write_spy = jest.spyOn(fs, 'writeFileSync')
-  //   write_spy.mockImplementation((file, data) => {
-  //     // do nothing
-  //   })
-
-  //   const bump_spy = jest.spyOn(bump, 'bump_version')
-  //   bump_spy.mockReturnValue('mocked return' as unknown as BookConfig)
-
-  //   const bump_args = {
-  //     release: 'test',
-  //     release_date: new Date(),
-  //   }
-
-  //   await validate_repo([test_glob('valid')], true, bump_args)
-  //   expect(bump_spy).toHaveBeenCalledWith(
-  //     expect.anything(),
-  //     bump_args.release,
-  //     bump_args.release_date
-  //   )
-  //   expect(write_spy).toHaveBeenCalledWith(
-  //     expect.stringMatching(/./),
-  //     expect.stringMatching(/mocked return/)
-  //   )
-  // })
+  it('fails when the ref is not a release branch push', async () => {
+    process.env['GITHUB_REF'] = invalid_github_ref
+    const write_spy = jest.spyOn(fs, 'writeFileSync')
+    write_spy.mockImplementation((file, data) => {})
+    expect(() => validate_repo([test_glob('valid')], true, true)).rejects.toThrow()
+  })
 })

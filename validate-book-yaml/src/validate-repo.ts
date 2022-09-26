@@ -1,8 +1,10 @@
+import * as core from '@actions/core'
 import * as glob from '@actions/glob'
 import Ajv from 'ajv'
 import fs from 'fs'
 import path from 'path'
 import YAML from 'yaml'
+import {determine_release} from './determine-release'
 import {
   IConfigError,
   ParseError,
@@ -15,8 +17,7 @@ import {book_schema, BookConfig} from './schema'
 export async function validate_repo(
   include: string[],
   follow_symbolic_links = true,
-  release_name?: string,
-  release_date?: Date
+  auto_update = false
 ): Promise<IConfigError[]> {
   const ajv = new Ajv({allowUnionTypes: true})
   const validate = ajv.compile(book_schema)
@@ -39,6 +40,7 @@ export async function validate_repo(
       continue
     }
 
+    core.debug(`validating '${file}'`)
     file_count++
     const yaml = fs.readFileSync(file, 'utf-8')
     let config: BookConfig
@@ -70,21 +72,29 @@ export async function validate_repo(
     }
 
     // auto-update release and date
-    if (!was_error && (release_date || release_name)) {
-      if (!config.variables) config.variables = {}
-      if (release_name) config.variables.release = release_name
-      if (release_date)
-        config.variables.release_date = release_date.toLocaleDateString(undefined, {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        })
-      fs.writeFileSync(file, YAML.stringify(config))
+    const github_ref = process.env['GITHUB_REF']
+    if (auto_update) {
+      if (was_error) {
+        core.warning('skipping auto-update: there were validation errors')
+      } else if (!github_ref) {
+        core.warning('skipping auto-update: could not retrieve commit reference')
+      } else {
+        core.debug(`auto-updating release information`)
+
+        const release = determine_release(github_ref)
+        core.debug(`release name: '${release.name}'`)
+        core.debug(`release date: '${release.date}'`)
+
+        if (!config.variables) config.variables = {}
+        config.variables.release = release.name
+        config.variables.release_date = release.date
+        fs.writeFileSync(file, YAML.stringify(config))
+      }
     }
   }
 
-  // validate unique keys
   for (const tracker_name in unique_trackers) {
+    core.debug(`checking unique key across configs: '${tracker_name}'`)
     const tracker = unique_trackers[tracker_name]
     for (const value in tracker) {
       const files = tracker[value]
