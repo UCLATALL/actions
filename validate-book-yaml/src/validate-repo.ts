@@ -17,7 +17,8 @@ import {book_schema, BookConfig} from './schema'
 export async function validate_repo(
   include: string[],
   follow_symbolic_links = true,
-  auto_update = false
+  auto_update = false,
+  release_prefix = 'release/'
 ): Promise<IConfigError[]> {
   const ajv = new Ajv({allowUnionTypes: true})
   const validate = ajv.compile(book_schema)
@@ -81,7 +82,11 @@ export async function validate_repo(
       } else {
         core.debug(`auto-updating release information`)
 
-        const release = determine_release(github_ref)
+        const release = determine_release(
+          github_ref,
+          'America/Los_Angeles',
+          release_prefix
+        )
         core.debug(`release name: '${release.name}'`)
         core.debug(`release date: '${release.date}'`)
 

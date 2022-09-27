@@ -208,7 +208,7 @@ async function run() {
             core.setFailed(message);
             return;
         }
-        const validation_errors = await (0, validate_repo_1.validate_repo)(include, follow_symbolic_links, auto_update);
+        const validation_errors = await (0, validate_repo_1.validate_repo)(include, follow_symbolic_links, auto_update, release_prefix);
         core.setOutput('errors', validation_errors);
         if (validation_errors.length > 0) {
             const message = (0, formatting_1.relativize_paths)(format_error_message(validation_errors));
@@ -435,7 +435,7 @@ const yaml_1 = __importDefault(__nccwpck_require__(4083));
 const determine_release_1 = __nccwpck_require__(8959);
 const errors_1 = __nccwpck_require__(9292);
 const schema_1 = __nccwpck_require__(5171);
-async function validate_repo(include, follow_symbolic_links = true, auto_update = false) {
+async function validate_repo(include, follow_symbolic_links = true, auto_update = false, release_prefix = 'release/') {
     var _a;
     const ajv = new ajv_1.default({ allowUnionTypes: true });
     const validate = ajv.compile(schema_1.book_schema);
@@ -494,7 +494,7 @@ async function validate_repo(include, follow_symbolic_links = true, auto_update 
             }
             else {
                 core.debug(`auto-updating release information`);
-                const release = (0, determine_release_1.determine_release)(github_ref);
+                const release = (0, determine_release_1.determine_release)(github_ref, 'America/Los_Angeles', release_prefix);
                 core.debug(`release name: '${release.name}'`);
                 core.debug(`release date: '${release.date}'`);
                 if (!config.variables)

@@ -26,7 +26,8 @@ async function run() {
     const validation_errors = await validate_repo(
       include,
       follow_symbolic_links,
-      auto_update
+      auto_update,
+      release_prefix
     )
     core.setOutput('errors', validation_errors)
     if (validation_errors.length > 0) {
