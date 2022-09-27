@@ -2,8 +2,8 @@ name: High School / Advanced Statistics and Data Science I ({{ book.code }})
 sortOrder: 1
 variables:
   code: ABC
-  release: "1.0"
-  release_date: September 26, 2022
+  release: 50.0
+  release_date: January 1, 2022
 chapters:
   - name: Getting Started (Don't Skip This Part)
     pages:

@@ -1,10 +1,11 @@
 import {expect, jest, it, describe} from '@jest/globals'
-import fs from 'fs'
+import fs, {lstatSync} from 'fs'
 import {DateTime} from 'luxon'
 import path from 'path'
 import YAML from 'yaml'
 import {BookConfig} from './schema'
 import {validate_repo} from './validate-repo'
+import {copy_dir_sync, get_mtimes_sync} from './utils'
 
 const test_glob = (pattern: string): string => path.join('./test/fixtures', pattern, '*')
 
@@ -72,38 +73,52 @@ describe('auto-update', () => {
 
   it('does not change files when other validation errors occurred', async () => {
     process.env['GITHUB_REF'] = valid_github_ref
-    const write_spy = jest.spyOn(fs, 'writeFileSync')
-    write_spy.mockImplementation((file, data) => {})
-    await validate_repo([test_glob('missing-name')], true, true)
-    expect(write_spy).not.toHaveBeenCalled()
+
+    const temp_dir = 'test/fixtures/temp'
+    const glob = path.join(temp_dir, '*')
+    copy_dir_sync('test/fixtures/missing-name', temp_dir, true)
+
+    const pre_mtimes = get_mtimes_sync(temp_dir)
+    await validate_repo([glob], true, true)
+    const post_mtimes = get_mtimes_sync(temp_dir)
+    expect(post_mtimes).toStrictEqual(pre_mtimes)
+
+    fs.rmSync(temp_dir, {recursive: true, force: true})
   })
 
-  it("should create the release name and date if they don't exist", async () => {
-    process.env['GITHUB_REF'] = valid_github_ref
-    const write_spy = jest.spyOn(fs, 'writeFileSync')
-    write_spy.mockImplementation((file, data) => {
-      const config = YAML.parse(data as string) as BookConfig
-      expect(config.variables?.release).toBe(release)
-      expect(config.variables?.release_date).toBe(release_date)
-    })
-    await validate_repo([test_glob('valid')], true, true)
-  })
+  it("should create or update the release name and date if they don't exist", async () => {
+    // use the "valid" dir as it has two files with existing info and one without
 
-  it('should overwrite the release name and date if they exist', async () => {
     process.env['GITHUB_REF'] = valid_github_ref
-    const write_spy = jest.spyOn(fs, 'writeFileSync')
-    write_spy.mockImplementation((file, data) => {
-      const config = YAML.parse(data as string) as BookConfig
-      expect(config.variables?.release).toBe(release)
-      expect(config.variables?.release_date).toBe(release_date)
-    })
-    await validate_repo([test_glob('valid')], true, true)
+
+    const temp_dir = 'test/fixtures/temp'
+    const glob = path.join(temp_dir, '*')
+    copy_dir_sync('test/fixtures/valid', temp_dir, true)
+
+    await validate_repo([glob], true, true)
+    for (const file of fs.readdirSync(temp_dir)) {
+      if (!file.endsWith('.book.yml')) continue
+      const full_path = path.join(temp_dir, file)
+      const config = YAML.parse(fs.readFileSync(full_path).toString()) as BookConfig
+      expect(config.variables?.release).toStrictEqual(release)
+      expect(config.variables?.release_date).toStrictEqual(release_date)
+    }
+
+    fs.rmSync(temp_dir, {recursive: true, force: true})
   })
 
   it('fails when the ref is not a release branch push', async () => {
     process.env['GITHUB_REF'] = invalid_github_ref
-    const write_spy = jest.spyOn(fs, 'writeFileSync')
-    write_spy.mockImplementation((file, data) => {})
-    expect(() => validate_repo([test_glob('valid')], true, true)).rejects.toThrow()
+
+    const temp_dir = 'test/fixtures/temp'
+    const glob = path.join(temp_dir, '*')
+    copy_dir_sync('test/fixtures/valid', temp_dir, true)
+
+    const pre_mtimes = get_mtimes_sync(temp_dir)
+    await expect(() => validate_repo([glob], true, true)).rejects.toThrow()
+    const post_mtimes = get_mtimes_sync(temp_dir)
+    expect(post_mtimes).toStrictEqual(pre_mtimes)
+
+    fs.rmSync(temp_dir, {recursive: true, force: true})
   })
 })

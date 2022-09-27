@@ -88,6 +88,8 @@ export async function validate_repo(
         if (!config.variables) config.variables = {}
         config.variables.release = release.name
         config.variables.release_date = release.date
+
+        core.debug(`writing updated config to '${file}'`)
         fs.writeFileSync(file, YAML.stringify(config))
       }
     }
