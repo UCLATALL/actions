@@ -95,7 +95,12 @@ export async function validate_repo(
         config.variables.release_date = release.date
 
         core.debug(`writing updated config to '${file}'`)
-        fs.writeFileSync(file, YAML.stringify(config))
+        fs.writeFileSync(
+          file,
+          YAML.stringify(config, {
+            lineWidth: 120,
+          })
+        )
       }
     }
   }

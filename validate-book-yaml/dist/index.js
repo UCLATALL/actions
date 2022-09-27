@@ -502,7 +502,9 @@ async function validate_repo(include, follow_symbolic_links = true, auto_update 
                 config.variables.release = release.name;
                 config.variables.release_date = release.date;
                 core.debug(`writing updated config to '${file}'`);
-                fs_1.default.writeFileSync(file, yaml_1.default.stringify(config));
+                fs_1.default.writeFileSync(file, yaml_1.default.stringify(config, {
+                    lineWidth: 120,
+                }));
             }
         }
     }
