@@ -13,10 +13,9 @@ This action searches a given set of globs for book configuration YAML files. In 
 
 ## Outputs
 
-| name       | description                                                                                                                            |
-| ---------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `errors`   | A JSON array as a string. Each item is an error object a "description", the possible "location", and a "suggestion" for how to fix it. |
-| `warnings` | The same as the errors, except these errors can be considered non-critical and don't necessarily need to be fixed.                     |
+| name     | description                                                                                                                            |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `errors` | A JSON array as a string. Each item is an error object a "description", the possible "location", and a "suggestion" for how to fix it. |
 
 ## Valid Book Configuration
 
