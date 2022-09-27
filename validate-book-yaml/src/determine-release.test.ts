@@ -26,3 +26,9 @@ it('extracts the version name when named like `release/anything-else`', () => {
   const release_name = determine_release('refs/heads/release/anything', timezone)
   expect(release_name.name).toBe('anything')
 })
+
+it('accepts different release prefixes', () => {
+  const timezone = 'America/Los_Angeles'
+  const release_name = determine_release('refs/heads/test/anything', timezone, 'test/')
+  expect(release_name.name).toBe('anything')
+})

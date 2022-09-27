@@ -4,11 +4,12 @@ This action searches a given set of globs for book configuration YAML files. In 
 
 ## Inputs
 
-| name                    | default | description                                                                                       |
-| ----------------------- | ------- | ------------------------------------------------------------------------------------------------- |
-| `include`               | `.`     | A multiline input of the globs to use to build search paths. Use a newline to separate each glob. |
-| `follow-symbolic-links` | `true`  | Indicates whether to follow symbolic links when searching with the globs.                         |
-| `auto-update`           | `false` | If set to true, attempt to update the release name and date in the book configs.                  |
+| name                    | default    | description                                                                                       |
+| ----------------------- | ---------- | ------------------------------------------------------------------------------------------------- |
+| `include`               | `.`        | A multiline input of the globs to use to build search paths. Use a newline to separate each glob. |
+| `follow-symbolic-links` | `true`     | Indicates whether to follow symbolic links when searching with the globs.                         |
+| `auto-update`           | `false`    | If set to true, attempt to update the release name and date in the book configs.                  |
+| `release-prefix`        | `release/` | The prefix used to indicate release branches.                                                     |
 
 ## Outputs
 
@@ -88,10 +89,10 @@ tools:
 
 As part of the course build, there are a series of content validations that are run before persisting the changes. The current validations that are checked with this Action are described below, however, they are all checked again during the build process along with other more fine-grained errors. The checks here are just to prevent problems from being committed to the repositories.
 
-- At least one `*.book.yml` file should be present.
-- Book file should be a valid YAML.
-- Book `name` should be present.
-- Book `name` should not be repeated in the same course version.
+- At least one `*.book.yml` file must be present.
+- Book file must be a valid YAML.
+- Book `name` must be present.
+- Book `name` must not be repeated in the same course version.
 - Book `sortOrder` must be present and be a valid integer.
 
 ## Automatically update version and date
@@ -127,7 +128,7 @@ steps:
   - name: 'Validate the book configuration files'
     uses: UCLATALL/actions/validate-book-yaml@v1
     with:
-      automatically-update: false
+      auto-update: false
 ```
 
 ### Using the output
@@ -148,7 +149,7 @@ steps:
   - name: 'Use the errors in another step'
     uses: actions/github-script@v6
     env:
-      VALIDATION_ERRORS: ${{ steps.validate-book-yaml.outputs.errors }}
+      ERRORS: ${{ steps.validate-book-yaml.outputs.errors }}
     with:
       script: |
         // assert that there are no errors

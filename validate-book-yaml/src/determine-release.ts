@@ -16,19 +16,27 @@ interface Release {
  *  `refs/heads/<branch_name>`, for pull requests it is refs/pull/<pr_number>/merge, and for tags
  *  it is `refs/tags/<tag_name>`. For example, `refs/heads/feature-branch-1`.
  * @param timezone The Olson name for the timezone to use when setting release date.
+ * @param release_prefix The prefix for release branches. Throws if prefix does not match.
  */
 export function determine_release(
   github_ref: string,
-  timezone: string = 'America/Los_Angeles'
+  timezone: string = 'America/Los_Angeles',
+  release_prefix: string = 'release/'
 ): Release {
-  const pattern = /^refs\/heads\/release\/(?:v(\d+[.]\d+(?:[.]\d+)?$)|(.*))/
-  const matches = github_ref.match(pattern)
-  if (matches) {
-    return {
-      name: matches[1] ?? matches[2],
-      date: DateTime.now().setZone(timezone).toLocaleString(DateTime.DATE_FULL),
-    }
+  const full_prefix = `refs/heads/${release_prefix}`
+  if (!github_ref.startsWith(full_prefix)) {
+    throw Error(`'${github_ref}' does not have the required prefix '${release_prefix}'`)
   }
 
-  throw Error(`Could not determine release name from \`${github_ref}\``)
+  const unprefixed_ref = github_ref.substring(full_prefix.length)
+  const pattern = /^v(\d+[.]\d+(?:[.]\d+)?)$|(.*)/
+  const matches = unprefixed_ref.match(pattern)
+  if (!matches) {
+    throw Error(`Could not determine release name from '${github_ref}'`)
+  }
+
+  return {
+    name: matches[1] ?? matches[2],
+    date: DateTime.now().setZone(timezone).toLocaleString(DateTime.DATE_FULL),
+  }
 }

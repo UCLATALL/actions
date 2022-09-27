@@ -20,18 +20,24 @@ const luxon_1 = __nccwpck_require__(8811);
  *  `refs/heads/<branch_name>`, for pull requests it is refs/pull/<pr_number>/merge, and for tags
  *  it is `refs/tags/<tag_name>`. For example, `refs/heads/feature-branch-1`.
  * @param timezone The Olson name for the timezone to use when setting release date.
+ * @param release_prefix The prefix for release branches. Throws if prefix does not match.
  */
-function determine_release(github_ref, timezone = 'America/Los_Angeles') {
+function determine_release(github_ref, timezone = 'America/Los_Angeles', release_prefix = 'release/') {
     var _a;
-    const pattern = /^refs\/heads\/release\/(?:v(\d+[.]\d+(?:[.]\d+)?$)|(.*))/;
-    const matches = github_ref.match(pattern);
-    if (matches) {
-        return {
-            name: (_a = matches[1]) !== null && _a !== void 0 ? _a : matches[2],
-            date: luxon_1.DateTime.now().setZone(timezone).toLocaleString(luxon_1.DateTime.DATE_FULL),
-        };
+    const full_prefix = `refs/heads/${release_prefix}`;
+    if (!github_ref.startsWith(full_prefix)) {
+        throw Error(`'${github_ref}' does not have the required prefix '${release_prefix}'`);
     }
-    throw Error(`Could not determine release name from \`${github_ref}\``);
+    const unprefixed_ref = github_ref.substring(full_prefix.length);
+    const pattern = /^v(\d+[.]\d+(?:[.]\d+)?)$|(.*)/;
+    const matches = unprefixed_ref.match(pattern);
+    if (!matches) {
+        throw Error(`Could not determine release name from '${github_ref}'`);
+    }
+    return {
+        name: (_a = matches[1]) !== null && _a !== void 0 ? _a : matches[2],
+        date: luxon_1.DateTime.now().setZone(timezone).toLocaleString(luxon_1.DateTime.DATE_FULL),
+    };
 }
 exports.determine_release = determine_release;
 //# sourceMappingURL=determine-release.js.map
@@ -193,8 +199,10 @@ async function run() {
         const include = core.getMultilineInput('include');
         const follow_symbolic_links = core.getBooleanInput('follow-symbolic-links');
         const auto_update = core.getBooleanInput('auto-update');
+        const release_prefix = core.getInput('release-prefix');
         core.debug(`include '${include}'`);
         core.debug(`auto-update '${auto_update}'`);
+        core.debug(`release-prefix '${release_prefix}'`);
         if (!(Array.isArray(include) && include.every(glob => typeof glob === 'string'))) {
             const message = 'Argument to `include` must be a string of globs (with newline characters separating globs).';
             core.setFailed(message);
@@ -208,8 +216,12 @@ async function run() {
         }
     }
     catch (error) {
-        if (error instanceof Error)
+        if (error instanceof Error) {
             core.setFailed(error.message);
+        }
+        else {
+            core.setFailed(String(error));
+        }
     }
 }
 function format_error_message(validation_errors) {

@@ -14,6 +14,7 @@ it('will work on GitHub Actions (valid)', () => {
   process.env['INPUT_INCLUDE'] = './test/fixtures/valid/*'
   process.env['INPUT_FOLLOW-SYMBOLIC-LINKS'] = 'true'
   process.env['INPUT_AUTO-UPDATE'] = 'true'
+  process.env['INPUT_RELEASE-PREFIX'] = 'release/'
 
   // get info for executing with node
   const node = process.execPath
@@ -27,6 +28,7 @@ it('will work on GitHub Actions (valid)', () => {
   expect(relativize_paths(output)).toMatchInlineSnapshot(`
     "::debug::include './test/fixtures/valid/*'
     ::debug::auto-update 'true'
+    ::debug::release-prefix 'release/'
     ::debug::followSymbolicLinks 'true'
     ::debug::matchDirectories 'false'
     ::debug::followSymbolicLinks 'true'
@@ -59,6 +61,7 @@ it('will work on GitHub Actions (invalid)', () => {
   process.env['INPUT_INCLUDE'] = './test/fixtures/missing-name/*'
   process.env['INPUT_FOLLOW-SYMBOLIC-LINKS'] = 'true'
   process.env['INPUT_AUTO-UPDATE'] = 'true'
+  process.env['INPUT_RELEASE-PREFIX'] = 'release/'
 
   // get info for executing with node
   const node = process.execPath
@@ -82,6 +85,7 @@ it('will work on GitHub Actions (invalid)', () => {
     expect(relativize_paths(output)).toMatchInlineSnapshot(`
       "::debug::include './test/fixtures/missing-name/*'
       ::debug::auto-update 'true'
+      ::debug::release-prefix 'release/'
       ::debug::followSymbolicLinks 'true'
       ::debug::matchDirectories 'false'
       ::debug::followSymbolicLinks 'true'

@@ -11,8 +11,10 @@ async function run() {
     const include = core.getMultilineInput('include')
     const follow_symbolic_links = core.getBooleanInput('follow-symbolic-links')
     const auto_update = core.getBooleanInput('auto-update')
+    const release_prefix = core.getInput('release-prefix')
     core.debug(`include '${include}'`)
     core.debug(`auto-update '${auto_update}'`)
+    core.debug(`release-prefix '${release_prefix}'`)
 
     if (!(Array.isArray(include) && include.every(glob => typeof glob === 'string'))) {
       const message =
@@ -32,7 +34,11 @@ async function run() {
       core.setFailed(message)
     }
   } catch (error) {
-    if (error instanceof Error) core.setFailed(error.message)
+    if (error instanceof Error) {
+      core.setFailed(error.message)
+    } else {
+      core.setFailed(String(error))
+    }
   }
 }
 
