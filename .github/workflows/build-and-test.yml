@@ -19,9 +19,7 @@ jobs:
 
       # https://github.com/actions/setup-node
       - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
+        uses: actions/setup-node@v4
 
       - name: "Build find-duplicate-ids"
         uses: ./.github/workflows/workflow-actions/build

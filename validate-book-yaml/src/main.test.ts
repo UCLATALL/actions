@@ -65,8 +65,6 @@ it('will work on GitHub Actions (valid)', () => {
     ::debug::writing updated config to './test/fixtures/temp--(rand. string)/no-book-variables.book.yml'
     ::debug::checking unique key across configs: 'name'
     ::debug::checking unique key across configs: 'sortOrder'
-
-    ::set-output name=errors::[]
     "
   `)
 
@@ -121,7 +119,6 @@ it('will work on GitHub Actions (invalid)', () => {
       ::debug::checking unique key across configs: 'name'
       ::debug::checking unique key across configs: 'sortOrder'
 
-      ::set-output name=errors::[{"description":"Missing required property 'name'","location":"./test/fixtures/temp--(rand. string)/missing-name.book.yml","suggestion":""}]
       ::error::Some errors were found when validating the book configuration files%0A%0ADescription: Missing required property 'name'%0ALocation: ./test/fixtures/temp--(rand. string)/missing-name.book.yml
       "
     `)
