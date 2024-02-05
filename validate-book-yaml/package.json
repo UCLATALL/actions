@@ -29,8 +29,8 @@
   "author": "Adam Blake",
   "license": "AGPL-3.0-or-later",
   "dependencies": {
-    "@actions/core": "^1.9.1",
-    "@actions/glob": "^0.3.0",
+    "@actions/core": "^1.10.1",
+    "@actions/glob": "^0.4.0",
     "ajv": "^8.11.0",
     "luxon": "^3.0.4",
     "yaml": "^2.1.1"
