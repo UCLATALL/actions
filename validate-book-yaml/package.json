@@ -1,6 +1,6 @@
 {
   "name": "validate-book-yaml",
-  "version": "1.2.0",
+  "version": "1.6.0",
   "private": true,
   "description": "GitHub Action to validate CourseKata book configuration files.",
   "main": "dist/main.js",
