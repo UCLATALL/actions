@@ -1,12 +1,12 @@
-name: "Validate book YAML"
+name: 'Validate book YAML'
 description: |
   Ensure that all book YAML files in the repository are valid both as YAML
   and as CourseKata book configurations
-author: "Adam Blake"
+author: 'Adam Blake'
 inputs:
   include:
     description: |
-      A multiline input of the globs to use to build search paths to find the 
+      A multiline input of the globs to use to build search paths to find the
       book configuration files. Use a newline to separate each glob.
     required: false
     default: .
@@ -15,12 +15,12 @@ inputs:
       Indicates whether to follow symbolic links when searching the globs for
       book configurations.
     required: false
-    default: "true"
+    default: 'true'
   auto-update:
     description: |
       Indicates whether to apply automatic updates as described in the README
     required: false
-    default: "false"
+    default: 'false'
   release-prefix:
     description: |
       When auto-update is on, this prefix is used to indicate which branches
@@ -29,7 +29,7 @@ inputs:
       start with the prefix, the prefix will be stripped and the version name
       will be determined from the remainder.
     required: false
-    default: "release/"
+    default: 'release/'
 outputs:
   errors:
     description: |
@@ -42,8 +42,8 @@ outputs:
       The same as the errors, except these errors can be considered non-
       critical and don't necessarily need to be fixed.
 runs:
-  using: "node16"
-  main: "dist/index.js"
+  using: 'node20'
+  main: 'dist/index.js'
 branding:
-  icon: "book-open"
-  color: "blue"
+  icon: 'book-open'
+  color: 'blue'

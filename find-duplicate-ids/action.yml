@@ -4,7 +4,7 @@ author: 'Adam Blake'
 inputs:
   include:
     description: |
-      A multiline input of the globs to use to build search paths. Use a 
+      A multiline input of the globs to use to build search paths. Use a
       newline to separate each glob.
     required: false
     default: .
@@ -22,10 +22,10 @@ outputs:
   duplicates:
     description: |
       A JSON object as a string, where the keys are the duplicate IDs and the
-      values are the locations in the files they were found in. If none are 
+      values are the locations in the files they were found in. If none are
       found, an empty object is returned: '{}'
 runs:
-  using: 'node16'
+  using: 'node20'
   main: 'dist/index.js'
 branding:
   icon: 'search'
