@@ -23,12 +23,6 @@ jobs:
       # https://github.com/actions/checkout
       - uses: actions/checkout@v4
 
-      # https://github.com/actions/setup-node
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          cache: npm
-
       - name: "Build find-duplicate-ids"
         uses: ./.github/workflows/workflow-actions/build
         with:

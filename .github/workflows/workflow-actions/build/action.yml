@@ -7,6 +7,13 @@ inputs:
 runs:
   using: "composite"
   steps:
+    # https://github.com/actions/setup-node
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        cache: npm
+        cache-dependency-path: ${{ inputs.action_dir }}/package-lock.json
+
     - name: Install dependencies
       shell: bash
       run: npm --prefix ${{ inputs.action_dir }} ci ${{ inputs.action_dir }}
