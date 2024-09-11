@@ -1,14 +1,19 @@
-name: "Build and test the actions"
+name: Continuous Integration
 
 on:
   pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - "**.md"
   push:
     branches:
       - main
-      - "releases/*"
     paths-ignore:
       - "**.md"
-  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   build: # make sure build/ci work properly
