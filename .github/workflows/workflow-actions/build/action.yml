@@ -1,5 +1,5 @@
-name: Test package build
-description: Ensure that a package builds and packages without errors.
+name: Build, package, and test
+description: Ensure that a package builds, packages, and tests without errors.
 inputs:
   action_dir:
     description: The directory the action resides in in this repository
@@ -10,7 +10,7 @@ runs:
     - name: Install dependencies
       shell: bash
       run: npm --prefix ${{ inputs.action_dir }} ci ${{ inputs.action_dir }}
-    
+
     - name: Build and package the code
       shell: bash
       run: npm --prefix ${{ inputs.action_dir }} run all
