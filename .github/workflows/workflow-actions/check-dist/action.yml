@@ -11,7 +11,7 @@ inputs:
     description: The directory the action resides in in this repository
 runs:
   using: "composite"
-  steps: 
+  steps:
     - name: Install dependencies
       shell: bash
       run: npm --prefix ${{ inputs.action_dir }} ci ${{ inputs.action_dir }}
@@ -21,7 +21,7 @@ runs:
       run: |
         npm --prefix ${{ inputs.action_dir }} run compile
         npm --prefix ${{ inputs.action_dir }} run package
-    
+
     - name: Compare the expected and actual dist/ directories
       id: diff
       shell: bash
@@ -37,5 +37,5 @@ runs:
     - uses: actions/upload-artifact@v3
       if: ${{ failure() && steps.diff.conclusion == 'failure' }}
       with:
-        name: ${{ inputs.action_dir }}/dist
+        name: ${{ inputs.action_dir }}-dist
         path: ${{ inputs.action_dir }}/dist/
